@@ -19,7 +19,6 @@ export async function sendEmail(
   console.log(data, error);
 }
 
-// TODO: implement me
 export async function batchSendEmails(
   emails: {
     to: string;
