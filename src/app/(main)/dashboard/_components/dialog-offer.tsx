@@ -49,8 +49,24 @@ const formSchema = z.object({
 
 export default function DialogOffer() {
   const [open, setOpen] = useState(false);
-  const { execute, result, hasErrored, isPending } =
-    useAction(createOfferAction);
+  const { execute, result, hasErrored, isPending } = useAction(
+    createOfferAction,
+    {
+      onSuccess: () => {
+        form.reset();
+        setOpen(false);
+        toast.success("Offer created successfully", {
+          description: "You can now view your offer in the dashboard",
+          duration: 3000,
+        });
+      },
+      onError: (error) => {
+        toast.error("Failed to create offer", {
+          description: error instanceof Error ? error.message : "Unknown error",
+        });
+      },
+    }
+  );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -65,12 +81,6 @@ export default function DialogOffer() {
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     execute(data);
-    form.reset();
-    setOpen(false);
-    toast.success("Offer created successfully", {
-      description: "You can now view your offer in the dashboard",
-      duration: 3000,
-    });
   };
 
   return (
@@ -133,7 +143,11 @@ export default function DialogOffer() {
                 <FormItem>
                   <FormLabel>Category</FormLabel>
                   <FormControl>
-                    <Select {...field} disabled={isPending}>
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      disabled={isPending}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select a category" />
                       </SelectTrigger>
