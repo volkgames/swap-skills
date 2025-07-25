@@ -33,7 +33,7 @@ const registrationSchema = z
   });
 
 export default function RegisterPage() {
-  const { execute, isPending, hasErrored } = useAction(signUpAction, {
+  const { execute, isPending, hasErrored, result } = useAction(signUpAction, {
     onError({ error }) {
       toast.error("Something went wrong", {
         description: error.thrownError?.message,
@@ -141,8 +141,7 @@ export default function RegisterPage() {
               <Terminal className="h-4 w-4" />
               <AlertTitle>Error</AlertTitle>
               <AlertDescription>
-                There was a problem creating your account. Please check your
-                details and try again.
+                {result.serverError?.message}
               </AlertDescription>
             </Alert>
           )}

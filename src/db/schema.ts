@@ -1,4 +1,5 @@
 import {
+  boolean,
   index,
   pgEnum,
   pgTable,
@@ -89,6 +90,38 @@ export const sessions = pgTable(
   (table) => [index("sessions_user_id_idx").on(table.userId)]
 );
 
+export const categories = pgEnum("category", [
+  "tech",
+  "design",
+  "language",
+  "marketing",
+  "other",
+]);
+
+export const offers = pgTable(
+  "offers",
+  {
+    id: serial("id").primaryKey(),
+    userId: serial("userId")
+      .notNull()
+      .references(() => users.id, {
+        onDelete: "cascade",
+      }),
+    offerSkill: text("offerSkill").notNull(),
+    requestSkill: text("requestSkill").notNull(),
+    description: text("description"),
+    category: categories("category").notNull(),
+    createdAt: timestamp("createdAt", {
+      withTimezone: true,
+      mode: "date",
+    })
+      .notNull()
+      .defaultNow(),
+    isActive: boolean("isActive").notNull().default(true),
+  },
+  (table) => [index("offers_user_id_idx").on(table.userId)]
+);
+
 // types
 export type Session = typeof sessions.$inferSelect;
 export type NewSession = typeof sessions.$inferInsert;
@@ -98,3 +131,5 @@ export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type Profile = typeof profiles.$inferSelect;
 export type NewProfile = typeof profiles.$inferInsert;
+export type Offer = typeof offers.$inferSelect;
+export type NewOffer = typeof offers.$inferInsert;

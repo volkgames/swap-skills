@@ -28,7 +28,7 @@ const registrationSchema = z.object({
 });
 
 export default function SignInPage() {
-  const { execute, isPending, hasErrored } = useAction(signInAction, {
+  const { execute, isPending, hasErrored, result } = useAction(signInAction, {
     onError({ error }) {
       toast.error("Something went wrong", {
         description: error.thrownError?.message,
@@ -102,8 +102,7 @@ export default function SignInPage() {
               <Terminal className="h-4 w-4" />
               <AlertTitle>Error</AlertTitle>
               <AlertDescription>
-                There was a problem creating your account. Please check your
-                details and try again.
+                {result.serverError?.message}
               </AlertDescription>
             </Alert>
           )}

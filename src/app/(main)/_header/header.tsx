@@ -21,7 +21,7 @@ export async function Header() {
   const user = await getCurrentUser();
 
   return (
-    <div className="px-5 md:px-6">
+    <div className="px-5 md:px-6 border-b-2 border-gray-200">
       <div className="mx-auto flex w-full max-w-7xl py-4 justify-between">
         <div className="flex justify-between gap-10 items-center">
           <Link href="/" className="flex items-center gap-2">
