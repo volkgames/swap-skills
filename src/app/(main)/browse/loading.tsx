@@ -12,11 +12,15 @@ export default function LoadingBrowsePage() {
             <Skeleton className="h-[200px] w-full" />
           </div>
           
-          <div className="flex-1">
+          <div className="flex-1 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Array.from({ length: 6 }).map((_, i) => (
+              {Array.from({ length: 9 }).map((_, i) => (
                 <Skeleton key={i} className="h-[250px] w-full" />
               ))}
+            </div>
+            
+            <div className="flex justify-center">
+              <Skeleton className="h-10 w-[400px]" />
             </div>
           </div>
         </div>

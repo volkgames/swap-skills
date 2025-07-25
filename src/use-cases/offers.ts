@@ -16,12 +16,16 @@ interface GetOffersParams {
   search?: string | null;
   category?: string | null;
   sortBy?: "latest" | "oldest" | null;
+  page?: number;
+  limit?: number;
 }
 
 export async function getOffersUseCase({
   search,
   category,
   sortBy = "latest",
+  page = 1,
+  limit = 9,
 }: GetOffersParams) {
   const conditions = [];
 
@@ -39,14 +43,36 @@ export async function getOffersUseCase({
     conditions.push(eq(offers.category, category as (typeof categories.enumValues)[number]));
   }
 
-  // Build the query
-  const query = database
+  // Calculate offset
+  const offset = (page - 1) * limit;
+
+  // Get total count for pagination
+  const totalCountQuery = await database
+    .select({ count: sql<number>`count(*)` })
+    .from(offers)
+    .where(conditions.length > 0 ? and(...conditions) : undefined);
+
+  const totalCount = Number(totalCountQuery[0].count);
+  const totalPages = Math.ceil(totalCount / limit);
+
+  // Get paginated results
+  const results = await database
     .select()
     .from(offers)
     .where(conditions.length > 0 ? and(...conditions) : undefined)
-    .orderBy(sortBy === "oldest" ? asc(offers.createdAt) : desc(offers.createdAt));
+    .orderBy(sortBy === "oldest" ? asc(offers.createdAt) : desc(offers.createdAt))
+    .limit(limit)
+    .offset(offset);
 
-  return query;
+  return {
+    offers: results,
+    pagination: {
+      total: totalCount,
+      totalPages,
+      currentPage: page,
+      limit,
+    },
+  };
 }
 
 export async function createOfferUseCase(props: NewOffer) {

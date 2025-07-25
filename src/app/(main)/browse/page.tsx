@@ -3,16 +3,20 @@ import SearchBar from "./_components/search-bar";
 import Filters from "./_components/filters";
 import OfferGrid from "./_components/offer-grid";
 import { getUserProfileUseCase } from "@/use-cases/users";
+import Pagination from "./_components/pagination";
 
 export default async function BrowsePage({
   searchParams,
 }: {
   searchParams: { [key: string]: string | undefined };
 }) {
-  const offers = await getOffersUseCase({
+  const currentPage = searchParams.page ? parseInt(searchParams.page) : 1;
+  
+  const { offers, pagination } = await getOffersUseCase({
     search: searchParams.search,
     category: searchParams.category,
     sortBy: searchParams.sortBy as "latest" | "oldest",
+    page: currentPage,
   });
 
   // Get all user profiles for the offers
@@ -27,7 +31,7 @@ export default async function BrowsePage({
   );
 
   return (
-    <div className="container mx-auto py-8 px-10">
+    <div className="container mx-auto py-8">
       <div className="flex flex-col space-y-6">
         <h1 className="text-3xl font-bold">Browse Skills</h1>
         
@@ -37,10 +41,15 @@ export default async function BrowsePage({
             <Filters />
           </div>
           
-          <div className="flex-1">
+          <div className="flex-1 space-y-6">
             <OfferGrid 
               offers={offers} 
               profiles={profileMap}
+            />
+            
+            <Pagination
+              currentPage={pagination.currentPage}
+              totalPages={pagination.totalPages}
             />
           </div>
         </div>

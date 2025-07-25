@@ -79,11 +79,11 @@ export default function OfferCard({ offer, profile }: OfferCardProps) {
         <div className="flex flex-row gap-4">
           <div>
             <span className="font-medium text-muted-foreground">Offer:</span>{" "}
-            <span className="font-semibold">{offer.offerSkill}</span>
+            <span className="font-semibold text-wrap line-clamp-[calc(5)]">{offer.offerSkill}</span>
           </div>
           <div>
             <span className="font-medium text-muted-foreground">Request:</span>{" "}
-            <span className="font-semibold">{offer.requestSkill}</span>
+            <span className="font-semibold text-wrap line-clamp-[calc(5)]">{offer.requestSkill}</span>
           </div>
         </div>
         {offer.description && (
