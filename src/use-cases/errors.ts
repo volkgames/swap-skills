@@ -25,6 +25,13 @@ export class NotFoundError extends PublicError {
   }
 }
 
+export class ForbiddenError extends PublicError {
+  constructor() {
+    super("You are not authorized to access this resource");
+    this.name = "ForbiddenError";
+  }
+}
+
 export class TokenExpiredError extends PublicError {
   constructor() {
     super("Token has expired");

@@ -5,7 +5,7 @@ import z from "zod";
 import { categories } from "@/db/schema";
 import { rateLimitByKey } from "@/lib/limiter";
 import { revalidatePath } from "next/cache";
-import { createOfferUseCase } from "@/use-cases/offers";
+import { createOfferUseCase, deleteOfferUseCase } from "@/use-cases/offers";
 
 export const createOfferAction = authenticatedActionClient
   .inputSchema(
@@ -28,6 +28,24 @@ export const createOfferAction = authenticatedActionClient
       ...parsedInput,
       userId: user.id,
     });
+
+    revalidatePath("/dashboard");
+  });
+
+export const deleteOfferAction = authenticatedActionClient
+  .inputSchema(
+    z.object({
+      offerId: z.number(),
+    })
+  )
+  .action(async ({ parsedInput, ctx }) => {
+    const { user } = ctx;
+
+    await rateLimitByKey({
+      key: `delete-offer-${user.id}`,
+    });
+
+    await deleteOfferUseCase(parsedInput.offerId, user.id);
 
     revalidatePath("/dashboard");
   });

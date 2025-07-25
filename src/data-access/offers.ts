@@ -20,6 +20,18 @@ export async function getOffersByUserId(userId: UserId) {
     .from(offers)
     .where(eq(offers.userId, userId))
     .orderBy(desc(offers.createdAt));
-    
+
   return ofs;
+}
+
+export async function getOfferById(offerId: number) {
+  const offer = await database.query.offers.findFirst({
+    where: eq(offers.id, offerId),
+  });
+
+  return offer;
+}
+
+export async function deleteOffer(offerId: number) {
+  await database.delete(offers).where(eq(offers.id, offerId));
 }
