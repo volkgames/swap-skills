@@ -141,7 +141,7 @@ export const requests = pgTable(
     })
       .notNull()
       .defaultNow(),
-    accepted: boolean("accepted").notNull().default(false),
+    accepted: boolean("accepted"),
   },
   (table) => [index("requests_user_id_idx").on(table.userId)]
 );

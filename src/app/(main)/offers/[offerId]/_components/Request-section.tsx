@@ -2,12 +2,12 @@ import { Avatar } from "@/components/ui/avatar";
 import { AvatarFallback } from "@/components/ui/avatar";
 import { AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { getUserProfileUseCase } from "@/use-cases/users";
 import { getRequestsByOfferIdUseCase } from "@/use-cases/requests";
 import { formatDistanceToNow } from "date-fns";
 import { getCurrentUser } from "@/lib/session";
+import RequestDecisionButtons from "./request-decision-buttons";
 
 export default async function RequestSection({ offerId }: { offerId: number }) {
   const requests = await getRequestsByOfferIdUseCase(offerId);
@@ -37,8 +37,20 @@ export default async function RequestSection({ offerId }: { offerId: number }) {
                   <div>
                     <div className="flex items-center gap-2">
                       <h3 className="font-semibold">{profile.displayName}</h3>
-                      <Badge variant={req.accepted ? "default" : "secondary"}>
-                        {req.accepted ? "Accepted" : "Pending"}
+                      <Badge
+                        variant={
+                          req.accepted === null
+                            ? "secondary"
+                            : req.accepted
+                              ? "default"
+                              : "destructive"
+                        }
+                      >
+                        {req.accepted === null
+                          ? "Pending"
+                          : req.accepted
+                            ? "Accepted"
+                            : "Declined"}
                       </Badge>
                     </div>
                     <p className="text-sm text-muted-foreground mt-1">
@@ -48,15 +60,13 @@ export default async function RequestSection({ offerId }: { offerId: number }) {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  {!req.accepted &&
+                  {req.accepted === null &&
                     currentUser &&
                     currentUser.id === req.userId && (
-                      <>
-                        <Button variant="outline" size="sm">
-                          Decline
-                        </Button>
-                        <Button size="sm">Accept</Button>
-                      </>
+                      <RequestDecisionButtons
+                        requestId={req.id}
+                        offerId={req.offerId}
+                      />
                     )}
                 </div>
               </div>

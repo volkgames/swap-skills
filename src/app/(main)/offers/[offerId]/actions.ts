@@ -2,7 +2,10 @@
 
 import { rateLimitByKey } from "@/lib/limiter";
 import { authenticatedActionClient } from "@/lib/safe-action";
-import { createRequestUseCase } from "@/use-cases/requests";
+import {
+  changeRequestStatusUseCase,
+  createRequestUseCase,
+} from "@/use-cases/requests";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -24,4 +27,24 @@ export const createRequest = authenticatedActionClient
     });
 
     revalidatePath(`/offers/${parsedInput.offerId}`);
+  });
+
+export const changeRequestStatus = authenticatedActionClient
+  .inputSchema(
+    z.object({
+      requestId: z.number(),
+      offerId: z.number(),
+      status: z.boolean(),
+    })
+  )
+  .action(async ({ parsedInput, ctx }) => {
+    const { requestId, offerId, status } = parsedInput;
+
+    await rateLimitByKey({
+      key: `accept-request-${ctx.user.id}`,
+    });
+
+    await changeRequestStatusUseCase(requestId, ctx.user.id, status);
+
+    revalidatePath(`/offers/${offerId}`);
   });
