@@ -1,0 +1,1 @@
+ALTER TABLE "requests" ADD COLUMN "accepted" boolean DEFAULT false NOT NULL;

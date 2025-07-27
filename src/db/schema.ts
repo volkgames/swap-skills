@@ -122,6 +122,30 @@ export const offers = pgTable(
   (table) => [index("offers_user_id_idx").on(table.userId)]
 );
 
+export const requests = pgTable(
+  "requests",
+  {
+    id: serial("id").primaryKey(),
+    userId: serial("userId")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    offerId: serial("offerId")
+      .notNull()
+      .references(() => offers.id, {
+        onDelete: "cascade",
+      }),
+    message: text("message").notNull(),
+    createdAt: timestamp("createdAt", {
+      withTimezone: true,
+      mode: "date",
+    })
+      .notNull()
+      .defaultNow(),
+    accepted: boolean("accepted").notNull().default(false),
+  },
+  (table) => [index("requests_user_id_idx").on(table.userId)]
+);
+
 // types
 export type Session = typeof sessions.$inferSelect;
 export type NewSession = typeof sessions.$inferInsert;
@@ -133,3 +157,5 @@ export type Profile = typeof profiles.$inferSelect;
 export type NewProfile = typeof profiles.$inferInsert;
 export type Offer = typeof offers.$inferSelect;
 export type NewOffer = typeof offers.$inferInsert;
+export type Request = typeof requests.$inferSelect;
+export type NewRequest = typeof requests.$inferInsert;

@@ -4,14 +4,12 @@ import {
   getOfferById,
   getOffersByUserId,
 } from "@/data-access/offers";
-import { NewOffer } from "@/db/schema";
 import { UserId } from "./types";
 import { ForbiddenError, NotFoundError } from "./errors";
 import { database } from "@/db/index";
-import { offers, categories } from "@/db/schema";
-import { and, asc, desc, eq, ilike, sql } from "drizzle-orm";
-import { z } from "zod";
-
+import { offers, categories, NewOffer } from "@/db/schema";
+import { and, asc, desc, eq, sql } from "drizzle-orm";
+import { offerPageSize } from "@/app-config";
 interface GetOffersParams {
   search?: string | null;
   category?: string | null;
@@ -25,7 +23,7 @@ export async function getOffersUseCase({
   category,
   sortBy = "latest",
   page = 1,
-  limit = 9,
+  limit = offerPageSize,
 }: GetOffersParams) {
   const conditions = [];
 
@@ -40,7 +38,9 @@ export async function getOffersUseCase({
 
   // Add category filter if category is provided
   if (category) {
-    conditions.push(eq(offers.category, category as (typeof categories.enumValues)[number]));
+    conditions.push(
+      eq(offers.category, category as (typeof categories.enumValues)[number])
+    );
   }
 
   // Calculate offset
@@ -60,7 +60,9 @@ export async function getOffersUseCase({
     .select()
     .from(offers)
     .where(conditions.length > 0 ? and(...conditions) : undefined)
-    .orderBy(sortBy === "oldest" ? asc(offers.createdAt) : desc(offers.createdAt))
+    .orderBy(
+      sortBy === "oldest" ? asc(offers.createdAt) : desc(offers.createdAt)
+    )
     .limit(limit)
     .offset(offset);
 
@@ -73,6 +75,11 @@ export async function getOffersUseCase({
       limit,
     },
   };
+}
+
+export async function getOfferByIdUseCase(offerId: number) {
+  const offer = await getOfferById(offerId);
+  return offer;
 }
 
 export async function createOfferUseCase(props: NewOffer) {
