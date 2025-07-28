@@ -10,18 +10,28 @@ import {
   updateUser,
 } from "@/data-access/users";
 import { LoginError, PublicError } from "./errors";
-import { createProfile, getProfile } from "@/data-access/profiles";
+import {
+  createProfile,
+  getProfile,
+  updateProfile,
+} from "@/data-access/profiles";
 import {
   createVerifyEmailToken,
   deleteVerifyEmailToken,
   getVerifyEmailToken,
 } from "./verify-email";
-import { applicationName } from "@/app-config";
+import {
+  applicationName,
+  MAX_UPLOAD_IMAGE_SIZE,
+  MAX_UPLOAD_IMAGE_SIZE_IN_MB,
+} from "@/app-config";
 import { sendEmail } from "@/lib/send-email";
 import { VerifyEmail } from "@/emails/verify-email";
 import { UserId } from "./types";
 import { GoogleUser } from "@/app/(main)/api/login/google/callback/route";
 import { GitHubUser } from "@/app/(main)/api/login/github/callback/route";
+import { createUUID } from "@/util/uuid";
+import { uploadFileToBucket } from "@/lib/files";
 
 export async function getUserProfileUseCase(userId: UserId) {
   const profile = await getProfile(userId);
@@ -117,4 +127,40 @@ export async function createGithubUserUseCase(githubUser: GitHubUser) {
   await createProfile(existingUser.id, githubUser.login, githubUser.avatar_url);
 
   return existingUser.id;
+}
+
+export function getProfileImageKey(userId: UserId, imageId: string) {
+  return `${userId}-${imageId}`;
+}
+
+export async function updateProfileImageUseCase(file: File, userId: UserId) {
+  if (!file.type.startsWith("image/")) {
+    throw new PublicError("File should be an image.");
+  }
+
+  if (file.size > MAX_UPLOAD_IMAGE_SIZE) {
+    throw new PublicError(
+      `File size should be less than ${MAX_UPLOAD_IMAGE_SIZE_IN_MB}MB.`
+    );
+  }
+
+  const imageId = createUUID();
+  const imageUrl = await uploadFileToBucket(
+    file,
+    getProfileImageKey(userId, imageId)
+  );
+  console.log("imageUrl", imageUrl);
+
+  await updateProfile(userId, { imageUrl });
+}
+
+export async function updateProfileNameUseCase(
+  userId: UserId,
+  displayName: string
+) {
+  await updateProfile(userId, { displayName });
+}
+
+export async function updateProfileBioUseCase(userId: UserId, bio: string) {
+  await updateProfile(userId, { bio });
 }
