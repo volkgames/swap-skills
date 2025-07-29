@@ -10,7 +10,7 @@ import { EditBioForm } from "./_components/edit-bio-form";
 
 export default function SettingsPage() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-10">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
         <ProfileImage />
         <ProfileName />
