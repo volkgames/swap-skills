@@ -8,6 +8,7 @@ import { NewRequest } from "@/db/schema";
 import { ForbiddenError, NotFoundError } from "./errors";
 
 export async function createRequestUseCase(request: NewRequest) {
+  console.log(request);
   const newRequest = await createRequest(request);
   return newRequest;
 }

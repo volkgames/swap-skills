@@ -5,11 +5,11 @@ import { getUserProfileUseCase } from "@/use-cases/users";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from "date-fns";
-import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/session";
 import { getOfferByIdUseCase } from "@/use-cases/offers";
 import RequestSection from "./_components/Request-section";
 import { Suspense } from "react";
+import RequestDialog from "./_components/request-dialog";
 
 export default async function OfferPage({
   params,
@@ -58,9 +58,7 @@ export default async function OfferPage({
         </div>
         <div className="flex flex-col gap-2 w-full md:w-auto">
           {currentUser && currentUser.id !== offer.userId && (
-            <Button size="lg" className="w-full md:w-auto">
-              I&apos;m Interested
-            </Button>
+            <RequestDialog offerId={offerId} user={currentUser} />
           )}
         </div>
       </section>

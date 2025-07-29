@@ -46,7 +46,7 @@ export default function OfferCard({ offer, profile }: OfferCardProps) {
             </AvatarFallback>
           </Avatar>
           <div>
-            <CardTitle className="text-lg font-semibold">
+            <CardTitle className="text-lg font-semibold break-all">
               {offer.offerSkill}
             </CardTitle>
             <p className="text-xs text-muted-foreground">

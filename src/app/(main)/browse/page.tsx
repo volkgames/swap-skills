@@ -8,14 +8,15 @@ import Pagination from "./_components/pagination";
 export default async function BrowsePage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
-  const currentPage = searchParams.page ? parseInt(searchParams.page) : 1;
+  const { page, search, category, sortBy } = await searchParams;
+  const currentPage = page ? parseInt(page) : 1;
   
   const { offers, pagination } = await getOffersUseCase({
-    search: searchParams.search,
-    category: searchParams.category,
-    sortBy: searchParams.sortBy as "latest" | "oldest",
+    search: search,
+    category: category,
+    sortBy: sortBy as "latest" | "oldest",
     page: currentPage,
   });
 

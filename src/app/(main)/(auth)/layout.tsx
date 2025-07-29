@@ -1,4 +1,4 @@
-import { assertAuthenticated } from "@/lib/session";
+import { getCurrentUser } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
 
@@ -7,7 +7,7 @@ export default async function AuthLayout({
 }: {
   children: ReactNode;
 }) {
-  const user = await assertAuthenticated();
+  const user = await getCurrentUser();
 
   if (user) {
     redirect("/dashboard");

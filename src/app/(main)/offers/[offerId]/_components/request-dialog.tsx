@@ -60,15 +60,19 @@ export default function RequestDialog({
       });
     },
     onError: ({ error }) => {
+      console.log(error);
       toast.error("Something went wrong", {
-        description: error.serverError?.message ?? "Please try again",
+        description: error.thrownError?.message ?? "Please try again",
       });
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     execute({
-      offerId,
+      // ! DO NOT REMOVE THIS, IT IS IMPORTANT FOR THE ACTION TO WORK
+      // * I don't know why the action taking this number as a string
+      // * So I convert it to string and then to number
+      offerId: parseInt(offerId.toString()),
       message: values.message,
     });
   }

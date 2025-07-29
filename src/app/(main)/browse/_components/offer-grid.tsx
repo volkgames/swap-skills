@@ -41,7 +41,7 @@ export default function OfferGrid({ offers, profiles }: OfferGridProps) {
                 </AvatarFallback>
               </Avatar>
               <div>
-                <CardTitle className="text-lg font-semibold">
+                <CardTitle className="text-lg font-semibold break-all">
                   {offer.offerSkill}
                 </CardTitle>
                 <p className="text-xs text-muted-foreground">
@@ -56,11 +56,11 @@ export default function OfferGrid({ offers, profiles }: OfferGridProps) {
               <div className="flex flex-row gap-4">
                 <div>
                   <span className="font-medium text-muted-foreground">Offer:</span>{" "}
-                  <span className="font-semibold">{offer.offerSkill}</span>
+                  <span className="font-semibold break-all">{offer.offerSkill}</span>
                 </div>
                 <div>
                   <span className="font-medium text-muted-foreground">Request:</span>{" "}
-                  <span className="font-semibold">{offer.requestSkill}</span>
+                  <span className="font-semibold break-all">{offer.requestSkill}</span>
                 </div>
               </div>
               {offer.description && (
