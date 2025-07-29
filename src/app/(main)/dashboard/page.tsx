@@ -14,7 +14,7 @@ export default async function DashboardPage() {
   const profile = await getUserProfileUseCase(user.id);
 
   return (
-    <div className="container mx-auto">
+    <div>
       <div className="relative h-52 bg-gray-300 flex flex-col items-start justify-center">
         {/* Settings Icon at top right */}
         <div className="absolute top-4 right-4">
@@ -40,7 +40,7 @@ export default async function DashboardPage() {
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-2 p-10">
+      <div className="container mx-auto flex flex-col gap-2 p-10">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">Your Offers</h1>
           <DialogOffer />
