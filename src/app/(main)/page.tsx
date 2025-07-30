@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { assertAuthenticated } from "@/lib/session";
+import { getCurrentUser } from "@/lib/session";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function Home() {
-  const user = await assertAuthenticated();
+  const user = await getCurrentUser();
 
   if (user) {
     redirect("/dashboard");
