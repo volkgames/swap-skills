@@ -29,13 +29,9 @@ export function VerifyEmail({ token }: { token: string }) {
           <Body className="bg-white my-auto mx-auto font-sans">
             <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] w-[465px]">
               <Section className="mt-[32px]">
-                <Img
-                  src={`${BASE_URL}/group.jpeg`}
-                  width="160"
-                  height="48"
-                  alt="StarterKit"
-                  className="my-0 mx-auto"
-                />
+                <Text className="text-black font-medium text-[14px] leading-[24px] mb-8">
+                  Verify your Email
+                </Text>
               </Section>
 
               <Section className="text-center mt-[32px] mb-[32px]">
